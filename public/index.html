@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jorge Chipana | Portafolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #1a1a24;
+      --accent: #00e5ff;
+      --accent2: #7c3aed;
+      --text: #e8e8f0;
+      --text2: #8888a0;
+      --border: rgba(255,255,255,0.08);
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --radius: 16px;
+      --transition: 0.3s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-display); background: var(--bg); color: var(--text); overflow-x: hidden; }
+    .hidden { display: none !important; }
+
+    /* ===== SPLASH ===== */
+    #splash {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: auto;
+      cursor: default;
+    }
+    #splash.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+    .splash-bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes gridPulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+    .splash-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      animation: splashIn 0.9s ease-out both;
+      pointer-events: auto;
+    }
+    @keyframes splashIn { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+    .splash-ring {
+      position: absolute;
+      width: 220px; height: 220px;
+      border: 1px solid rgba(0,229,255,0.2);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: ringPulse 2.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .ring2 { width: 310px; height: 310px; animation-delay: 0.5s; border-color: rgba(124,58,237,0.15); }
+    .ring3 { width: 420px; height: 420px; animation-delay: 1s; border-color: rgba(0,229,255,0.07); }
+    @keyframes ringPulse {
+      0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}
+      50%{transform:translate(-50%,-50%) scale(1.04);opacity:1}
+    }
+
+    .splash-photo-wrap {
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:1.5rem;
+      pointer-events: none;
+    }
+    .splash-avatar {
+      width: 110px; height: 110px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.4rem; font-weight: 800; color: white;
+      box-shadow: 0 0 50px rgba(0,229,255,0.35), 0 0 100px rgba(124,58,237,0.2);
+      border: 3px solid rgba(0,229,255,0.4);
+      letter-spacing: -2px;
+      overflow: hidden;
+    }
+    .splash-greeting {
+      font-family: var(--font-mono);
+      font-size: 0.85rem; color: var(--accent);
+      letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .splash-name {
+      font-size: clamp(3rem, 10vw, 6rem);
+      font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, #fff 40%, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 0.8rem;
+    }
+    .splash-role {
+      font-family: var(--font-mono);
+      font-size: 0.82rem; color: var(--text2); margin-bottom: 2.5rem; letter-spacing: 1px;
+    }
+
+    .enter-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: white; border: none; cursor: pointer;
+      padding: 0.9rem 2.2rem; border-radius: 100px;
+      font-family: var(--font-display); font-size: 1rem; font-weight: 700;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 30px rgba(0,229,255,0.3);
+      position: relative;
+      z-index: 100;
+      pointer-events: auto;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .enter-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(0,229,255,0.5); }
+    .enter-btn:active { transform: translateY(0); }
+
+    /* ===== NAV ===== */
+    #navbar {
+      position: fixed; top:0; left:0; right:0; z-index:900;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: padding var(--transition);
+    }
+    .nav-logo {
+      font-weight:800; font-size:1.2rem;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { color:var(--text2); text-decoration:none; font-size:0.88rem; font-weight:600; transition:color var(--transition); }
+    .nav-links a:hover { color:var(--accent); }
+    .nav-menu-btn { display:none; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 6rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-header { display:flex; align-items:baseline; gap:1rem; margin-bottom:3rem; }
+    .section-num { font-family:var(--font-mono); font-size:0.82rem; color:var(--accent); opacity:.7; letter-spacing:2px; }
+    .section-header h2 {
+      font-size: clamp(2rem, 5vw, 3rem); font-weight:800;
+      background: linear-gradient(135deg, #fff, var(--text2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+
+    /* ===== HERO ===== */
+    #hero {
+      min-height:100vh; display:flex; align-items:center; padding-top:80px;
+      background: radial-gradient(ellipse at 70% 50%, rgba(124,58,237,0.1) 0%, transparent 60%),
+                  radial-gradient(ellipse at 10% 80%, rgba(0,229,255,0.05) 0%, transparent 50%);
+    }
+    .hero-inner {
+      max-width:1100px; margin:0 auto;
+      display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; width:100%;
+    }
+    .hero-tag { font-family:var(--font-mono); font-size:0.78rem; color:var(--accent); letter-spacing:2px; text-transform:uppercase; display:block; margin-bottom:1rem; }
+    .hero-text h1 { font-size:clamp(3.5rem,8vw,6rem); font-weight:800; line-height:0.95; margin-bottom:1.5rem; }
+    .hero-text h1 em {
+      font-style:normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hero-desc { color:var(--text2); line-height:1.8; font-size:1rem; margin-bottom:2rem; max-width:480px; }
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:2rem; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color:white; padding:0.8rem 1.8rem; border-radius:100px;
+      text-decoration:none; font-weight:700; font-size:0.95rem;
+      transition:transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,229,255,0.2);
+    }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,229,255,0.35); }
+    .btn-secondary {
+      border:1px solid var(--border); color:var(--text);
+      padding:0.8rem 1.8rem; border-radius:100px;
+      text-decoration:none; font-weight:600; font-size:0.95rem;
+      transition:border-color var(--transition), color var(--transition);
+      background:rgba(255,255,255,0.03);
+    }
+    .btn-secondary:hover { border-color:var(--accent); color:var(--accent); }
+
+    .social-row { display:flex; gap:0.8rem; flex-wrap:wrap; }
+    .social-link {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding:0.45rem 1rem; border-radius:100px; border:1px solid var(--border);
+      color:var(--text2); text-decoration:none; font-size:0.83rem; font-weight:600;
+      transition:all var(--transition); background:rgba(255,255,255,0.03);
+    }
+    .social-link svg { width:17px; height:17px; }
+    .social-link:hover { border-color:var(--accent); color:var(--accent); background:rgba(0,229,255,0.06); }
+    .social-link.whatsapp:hover { border-color:#25d366; color:#25d366; background:rgba(37,211,102,0.06); }
+    .social-link.email:hover { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,0.06); }
+
+    .hero-visual { position:relative; display:flex; align-items:center; justify-content:center; min-height:420px; }
+    .hero-card {
+      background:var(--bg3); border:1px solid rgba(0,229,255,0.15);
+      border-radius:var(--radius); padding:2rem;
+      display:flex; align-items:center; gap:1.2rem;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,229,255,0.05);
+      animation:cardFloat 4s ease-in-out infinite;
+    }
+    @keyframes cardFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    .hero-avatar {
+      width:70px; height:70px; border-radius:50%;
+      background:linear-gradient(135deg,var(--accent2),var(--accent));
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.4rem; font-weight:800; color:white; flex-shrink:0;
+      overflow: hidden;
+    }
+    .hero-card-info { display:flex; flex-direction:column; gap:0.3rem; }
+    .hero-card-info strong { font-size:1rem; font-weight:700; }
+    .hero-card-info span { font-size:0.78rem; color:var(--text2); font-family:var(--font-mono); }
+    .status-dot { color:#22c55e !important; }
+
+    .floating-tag {
+      position:absolute; background:var(--bg3); border:1px solid var(--border);
+      padding:0.4rem 0.9rem; border-radius:100px;
+      font-size:0.75rem; font-family:var(--font-mono);
+      color:var(--accent); font-weight:700;
+      box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    }
+    .tag1 { top:8%; left:-5%; animation:float1 3s ease-in-out infinite; }
+    .tag2 { top:12%; right:-5%; animation:float2 3.5s ease-in-out infinite; }
+    .tag3 { bottom:18%; left:0%; animation:float1 4s ease-in-out infinite; }
+    .tag4 { bottom:8%; right:0%; animation:float2 2.8s ease-in-out infinite; }
+    @keyframes float1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(9px)} }
+
+    #sobre-mi { background:var(--bg2); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
+    .about-text p { color:var(--text2); line-height:1.8; margin-bottom:1rem; }
+    .about-text strong { color:var(--accent); }
+    .about-stats { display:flex; flex-direction:column; gap:1rem; }
+    .stat-box {
+      background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem;
+      display:flex; flex-direction:column; gap:0.3rem; transition:border-color var(--transition);
+    }
+    .stat-box:hover { border-color:var(--accent); }
+    .stat-num {
+      font-size:2.5rem; font-weight:800;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .stat-box span:last-child { font-size:0.83rem; color:var(--text2); }
+
+    .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+    .skills-col h3 { font-size:1rem; color:var(--accent); margin-bottom:1.5rem; font-family:var(--font-mono); letter-spacing:1px; }
+    .skill-item { margin-bottom:1.3rem; }
+    .skill-item > span { display:block; font-size:0.87rem; color:var(--text2); margin-bottom:0.5rem; }
+    .skill-bar { background:rgba(255,255,255,0.06); border-radius:100px; height:6px; overflow:hidden; }
+    .skill-fill {
+      height:100%; border-radius:100px;
+      background:linear-gradient(90deg,var(--accent2),var(--accent));
+      width:0; transition:width 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    .soft-skills { display:flex; flex-wrap:wrap; gap:0.5rem; }
+    .soft-tag {
+      background:var(--bg3); border:1px solid var(--border);
+      padding:0.4rem 1rem; border-radius:100px;
+      font-size:0.8rem; color:var(--text2); transition:all var(--transition);
+    }
+    .soft-tag:hover { border-color:var(--accent); color:var(--accent); }
+    .soft-tag.lang { border-color:rgba(0,229,255,0.25); color:var(--accent); }
+
+    #experiencia { background:var(--bg2); }
+    .timeline { position:relative; padding-left:2.2rem; }
+    .timeline::before {
+      content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+      background:linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    }
+    .timeline-item { position:relative; padding-bottom:3rem; }
+    .timeline-dot {
+      position:absolute; left:-2.55rem; top:0.4rem;
+      width:14px; height:14px; border-radius:50%;
+      background:var(--accent); box-shadow:0 0 16px rgba(0,229,255,0.6);
+      border:2px solid var(--bg2);
+    }
+    .timeline-content {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:1.8rem; transition:border-color var(--transition);
+    }
+    .timeline-content:hover { border-color:var(--accent); }
+    .timeline-header { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom:0.4rem; }
+    .timeline-header h3 { font-size:1.03rem; font-weight:700; }
+    .timeline-date { font-family:var(--font-mono); font-size:0.76rem; color:var(--accent); }
+    .timeline-org { color:var(--text2); font-size:0.84rem; margin-bottom:1rem; }
+    .timeline-content ul { padding-left:1.2rem; }
+    .timeline-content li { color:var(--text2); font-size:0.88rem; line-height:1.7; margin-bottom:0.2rem; }
+
+    .edu-grid { display:flex; flex-direction:column; gap:1.2rem; }
+    .edu-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:1.5rem;
+      display:flex; align-items:center; gap:1.5rem; transition:border-color var(--transition);
+    }
+    .edu-card:hover { border-color:var(--accent); }
+    .edu-card.active { border-color:rgba(0,229,255,0.3); box-shadow:0 0 30px rgba(0,229,255,0.05); }
+    .edu-icon { font-size:2rem; }
+    .edu-info { flex:1; }
+    .edu-info h3 { font-size:1rem; font-weight:700; margin-bottom:0.3rem; }
+    .edu-inst { font-size:0.84rem; color:var(--text2); }
+    .edu-period { font-size:0.78rem; color:var(--accent); font-family:var(--font-mono); margin-top:0.2rem; }
+    .edu-badge {
+      padding:0.3rem 0.9rem; border-radius:100px; font-size:0.73rem;
+      background:rgba(0,229,255,0.1); color:var(--accent);
+      border:1px solid rgba(0,229,255,0.3); font-family:var(--font-mono); white-space:nowrap;
+    }
+    .edu-badge.completed { background:rgba(124,58,237,0.1); color:#a78bfa; border-color:rgba(124,58,237,0.3); }
+
+    #intereses { background:var(--bg2); }
+    .interests-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .interest-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:1.5rem;
+      text-align:center; transition:all var(--transition);
+    }
+    .interest-card:hover { border-color:var(--accent); transform:translateY(-5px); box-shadow:0 12px 30px rgba(0,229,255,0.1); }
+    .interest-icon { font-size:2.2rem; display:block; margin-bottom:0.8rem; }
+    .interest-card p { font-size:0.86rem; color:var(--text2); line-height:1.5; }
+
+    .contact-intro { color:var(--text2); margin-bottom:2rem; font-size:1rem; }
+    .contact-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .contact-card {
+      background:var(--bg3); border:1px solid var(--border);
+      border-radius:var(--radius); padding:1.8rem;
+      display:flex; align-items:center; gap:1.2rem;
+      text-decoration:none; color:var(--text); transition:all var(--transition);
+    }
+    .contact-card svg { width:36px; height:36px; flex-shrink:0; }
+    .contact-card div { display:flex; flex-direction:column; gap:0.2rem; }
+    .contact-card strong { font-size:0.95rem; }
+    .contact-card span { font-size:0.76rem; color:var(--text2); font-family:var(--font-mono); }
+    .contact-card.github:hover { border-color:#8b949e; box-shadow:0 8px 30px rgba(139,148,158,0.15); }
+    .contact-card.github svg { color:#c9d1d9; }
+    .contact-card.whatsapp:hover { border-color:#25d366; box-shadow:0 8px 30px rgba(37,211,102,0.2); }
+    .contact-card.whatsapp svg { color:#25d366; }
+    .contact-card.email:hover { border-color:#f59e0b; box-shadow:0 8px 30px rgba(245,158,11,0.2); }
+    .contact-card.email svg { color:#f59e0b; }
+
+    footer { text-align:center; padding:2rem; border-top:1px solid var(--border); color:var(--text2); font-size:0.83rem; font-family:var(--font-mono); }
+
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--accent2); border-radius:3px; }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    @media (max-width:900px) {
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-visual { display:none; }
+      .about-grid, .skills-grid { grid-template-columns:1fr; }
+      .interests-grid { grid-template-columns:repeat(2,1fr); }
+      .contact-cards { grid-template-columns:1fr; }
+    }
+    @media (max-width:600px) {
+      .nav-links { display:none; }
+      .nav-menu-btn { display:block; }
+      section { padding:4rem 1.2rem; }
+      .hero-btns { flex-direction:column; }
+      .interests-grid { grid-template-columns:1fr; }
+      #navbar { padding:0.8rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== SPLASH ===== -->
+  <div id="splash">
+    <div class="splash-bg-grid"></div>
+    <div class="splash-content">
+      <div class="splash-ring"></div>
+      <div class="splash-ring ring2"></div>
+      <div class="splash-ring ring3"></div>
+      <div class="splash-photo-wrap">
+        <div class="splash-avatar">
+          <img src="images/foto 1.jpg" alt="Jorge Chipana" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
+      </div>
+      <p class="splash-greeting">Hola, soy</p>
+      <h1 class="splash-name">Jorge<br>Chipana</h1>
+      <p class="splash-role">Ing. de Sistemas · Soporte TI · Dev Web</p>
+      <button id="enterBtn" class="enter-btn">
+        <span>Ver mi portafolio</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== MAIN ===== -->
+  <div id="main" class="hidden">
+
+    <nav id="navbar">
+      <div class="nav-logo">JC</div>
+      <ul class="nav-links">
+        <li><a href="#sobre-mi">Sobre mí</a></li>
+        <li><a href="#habilidades">Habilidades</a></li>
+        <li><a href="#experiencia">Experiencia</a></li>
+        <li><a href="#educacion">Educación</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <button class="nav-menu-btn" id="menuBtn">☰</button>
+    </nav>
+
+    <section id="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="hero-tag">Estudiante 7mo Semestre · UAB Vinto</span>
+          <h1>Jorge<br><em>Chipana</em></h1>
+          <p class="hero-desc">Estudiante de Ingeniería de Sistemas con experiencia en soporte técnico, gestión de inventarios y desarrollo web. Apasionado por la Inteligencia Artificial y la transformación digital.</p>
+          <div class="hero-btns">
+            <a href="#contacto" class="btn-primary">Contáctame</a>
+            <a href="#experiencia" class="btn-secondary">Ver experiencia</a>
+          </div>
+          <div class="social-row">
+            <a href="https://github.com/dashboard/" target="_blank" class="social-link">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://wa.me/59173719750" target="_blank" class="social-link whatsapp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+            <!-- ✅ FIX: email corregido con mailto: -->
+            <a href="mailto:jorchistauro@gmail.com" class="social-link email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+              Correo
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-card">
+            <div class="hero-avatar">
+              <img src="images/foto 1.jpg" alt="Jorge Chipana" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+            </div>
+            <div class="hero-card-info">
+              <strong>Jorge Chipana</strong>
+              <span>Bolivia 🇧🇴</span>
+              <span class="status-dot">● Disponible</span>
+            </div>
+          </div>
+          <div class="floating-tag tag1">SQL</div>
+          <div class="floating-tag tag2">HTML / CSS</div>
+          <div class="floating-tag tag3">Node.js</div>
+          <div class="floating-tag tag4">OBS · vMix</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre-mi">
+      <div class="container">
+        <div class="section-header"><span class="section-num">01</span><h2>Sobre mí</h2></div>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>Soy estudiante de <strong>Ingeniería de Sistemas</strong> en la Universidad Adventista de Bolivia (7mo semestre). Cuento con formación técnica como <strong>Técnico Medio en Sistemas Computacionales</strong> del Instituto CEA, Pocohota.</p>
+            <p>Me apasiona el soporte tecnológico, el desarrollo web y la aplicación de <strong>Inteligencia Artificial</strong> a soluciones reales. Me caracterizo por el trabajo en equipo, la responsabilidad y la capacidad de adaptación a entornos dinámicos.</p>
+          </div>
+          <div class="about-stats">
+            <div class="stat-box"><span class="stat-num">3+</span><span>Años de experiencia laboral</span></div>
+            <div class="stat-box"><span class="stat-num">7mo</span><span>Semestre universitario activo</span></div>
+            <div class="stat-box"><span class="stat-num">2</span><span>Idiomas — Español & Aymara</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="habilidades">
+      <div class="container">
+        <div class="section-header"><span class="section-num">02</span><h2>Habilidades</h2></div>
+        <div class="skills-grid">
+          <div class="skills-col">
+            <h3>// Técnicas</h3>
+            <div class="skill-item"><span>Manejo de base de datos SQL</span><div class="skill-bar"><div class="skill-fill" data-w="80%"></div></div></div>
+            <div class="skill-item"><span>Mantenimiento de computadoras</span><div class="skill-bar"><div class="skill-fill" data-w="92%"></div></div></div>
+            <div class="skill-item"><span>Desarrollo web (HTML & CSS)</span><div class="skill-bar"><div class="skill-fill" data-w="75%"></div></div></div>
+            <div class="skill-item"><span>OBS & vMix — Transmisión</span><div class="skill-bar"><div class="skill-fill" data-w="88%"></div></div></div>
+            <div class="skill-item"><span>Inteligencia Artificial aplicada</span><div class="skill-bar"><div class="skill-fill" data-w="70%"></div></div></div>
+            <div class="skill-item"><span>Gestión y control de inventarios</span><div class="skill-bar"><div class="skill-fill" data-w="95%"></div></div></div>
+          </div>
+          <div class="skills-col">
+            <h3>// Blandas</h3>
+            <div class="soft-skills" style="margin-bottom:2rem">
+              <span class="soft-tag">Trabajo en equipo</span>
+              <span class="soft-tag">Responsabilidad</span>
+              <span class="soft-tag">Adaptabilidad</span>
+              <span class="soft-tag">Organización</span>
+              <span class="soft-tag">Atención al usuario</span>
+              <span class="soft-tag">Liderazgo</span>
+            </div>
+            <h3>// Idiomas</h3>
+            <div class="soft-skills">
+              <span class="soft-tag lang">🇪🇸 Español — Nativo</span>
+              <span class="soft-tag lang">Aymara</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiencia">
+      <div class="container">
+        <div class="section-header"><span class="section-num">03</span><h2>Experiencia</h2></div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <h3>Soporte Técnico TI</h3>
+                <span class="timeline-date">1 año · 2023–2024</span>
+              </div>
+              <p class="timeline-org">Universidad Adventista de Bolivia – Vinto</p>
+              <ul>
+                <li>Soporte técnico a equipos de computación.</li>
+                <li>Manejo de sonido, transmisión y proyección de imágenes en eventos institucionales.</li>
+                <li>Uso de software de transmisión OBS y vMix.</li>
+                <li>Configuración y asistencia técnica en actividades académicas y administrativas.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <h3>Ayudante de Almacén — Comedor Universitario</h3>
+                <span class="timeline-date">3 años · 2020–2023</span>
+              </div>
+              <p class="timeline-org">Universidad Adventista de Bolivia – Vinto</p>
+              <ul>
+                <li>Control y gestión de inventarios.</li>
+                <li>Registro y control de productos.</li>
+                <li>Atención al personal del comedor.</li>
+                <li>Organización y almacenamiento de insumos.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <h3>Departamento de Limpieza</h3>
+                <span class="timeline-date">Medio año</span>
+              </div>
+              <p class="timeline-org">Universidad Adventista de Bolivia – Vinto</p>
+              <ul>
+                <li>Trabajo en equipo.</li>
+                <li>Liderazgo en equipo.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="educacion">
+      <div class="container">
+        <div class="section-header"><span class="section-num">04</span><h2>Educación</h2></div>
+        <div class="edu-grid">
+          <div class="edu-card active">
+            <div class="edu-icon">🎓</div>
+            <div class="edu-info">
+              <h3>Ingeniería de Sistemas</h3>
+              <p class="edu-inst">Universidad Adventista de Bolivia – Vinto</p>
+              <p class="edu-period">7mo semestre · 2022 – Presente</p>
+            </div>
+            <span class="edu-badge">En curso</span>
+          </div>
+          <div class="edu-card">
+            <div class="edu-icon">💻</div>
+            <div class="edu-info">
+              <h3>Técnico Medio en Sistemas Computacionales</h3>
+              <p class="edu-inst">Instituto CEA – Pocohota, Ingavi, La Paz</p>
+            </div>
+            <span class="edu-badge completed">Completado</span>
+          </div>
+          <div class="edu-card">
+            <div class="edu-icon">📚</div>
+            <div class="edu-info">
+              <h3>Bachillerato en Humanidades</h3>
+              <p class="edu-inst">U.E. Jhon F. Kennedy – Ingavi-Pocohota</p>
+            </div>
+            <span class="edu-badge completed">Completado</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="intereses">
+      <div class="container">
+        <div class="section-header"><span class="section-num">05</span><h2>Intereses</h2></div>
+        <div class="interests-grid">
+          <div class="interest-card"><span class="interest-icon">🌐</span><p>Desarrollo de software y aplicaciones web</p></div>
+          <div class="interest-card"><span class="interest-icon">🗃️</span><p>Gestión y administración de bases de datos</p></div>
+          <div class="interest-card"><span class="interest-icon">🔧</span><p>Soporte técnico e infraestructura tecnológica</p></div>
+          <div class="interest-card"><span class="interest-icon">🤖</span><p>Inteligencia Artificial aplicada a soluciones tecnológicas</p></div>
+          <div class="interest-card"><span class="interest-icon">💡</span><p>Innovación y transformación digital</p></div>
+          <div class="interest-card"><span class="interest-icon">📖</span><p>Aprendizaje continuo en nuevas tecnologías</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto">
+      <div class="container">
+        <div class="section-header"><span class="section-num">06</span><h2>Contacto</h2></div>
+        <p class="contact-intro">¿Tienes un proyecto o propuesta? ¡Escríbeme por cualquiera de estos canales!</p>
+        <div class="contact-cards">
+          <a href="https://github.com/dashboard/" target="_blank" class="contact-card github">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <div><strong>GitHub</strong><span>github.com/jorgechipana</span></div>
+          </a>
+          <a href="https://wa.me/59173719750" target="_blank" class="contact-card whatsapp">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <div><strong>WhatsApp</strong><span>+591 737 197 50</span></div>
+          </a>
+          <!-- ✅ FIX: mailto: correcto -->
+          <a href="mailto:jorchistauro@gmail.com" class="contact-card email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+            <div><strong>Correo</strong><span>jorchistauro@gmail.com</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2025 Jorge Chipana · Diseñado con ❤️ en Bolivia 🇧🇴</p>
+    </footer>
+
+  </div>
+
+  <script>
+    window.addEventListener('load', function() {
+
+      var splash   = document.getElementById('splash');
+      var main     = document.getElementById('main');
+      var enterBtn = document.getElementById('enterBtn');
+
+      document.body.style.overflow = 'hidden';
+
+      enterBtn.onclick = function() {
+        splash.classList.add('exit');
+        setTimeout(function() {
+          splash.style.display = 'none';
+          main.classList.remove('hidden');
+          document.body.style.overflow = 'auto';
+          initReveal();
+          initBars();
+        }, 800);
+      };
+
+      function initReveal() {
+        var els = document.querySelectorAll('section, .timeline-item, .edu-card, .interest-card, .contact-card, .stat-box');
+        els.forEach(function(el) { el.classList.add('reveal'); });
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e, i) {
+            if (e.isIntersecting) setTimeout(function() { e.target.classList.add('visible'); }, i * 70);
+          });
+        }, { threshold: 0.08 });
+        els.forEach(function(el) { obs.observe(el); });
+      }
+
+      function initBars() {
+        var fills = document.querySelectorAll('.skill-fill');
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) {
+              fills.forEach(function(f) { f.style.width = f.dataset.w; });
+            }
+          });
+        }, { threshold: 0.3 });
+        var sec = document.getElementById('habilidades');
+        if (sec) obs.observe(sec);
+      }
+
+      var navbar = document.getElementById('navbar');
+      window.addEventListener('scroll', function() {
+        navbar.style.padding = window.scrollY > 50 ? '0.6rem 2.5rem' : '1rem 2.5rem';
+        var sections = document.querySelectorAll('section[id]');
+        var current = '';
+        sections.forEach(function(s) {
+          if (window.scrollY >= s.offsetTop - 120) current = s.id;
+        });
+        document.querySelectorAll('.nav-links a').forEach(function(a) {
+          a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+        });
+      });
+
+      var menuBtn  = document.getElementById('menuBtn');
+      var navLinks = document.querySelector('.nav-links');
+      var open = false;
+
+      menuBtn.onclick = function() {
+        open = !open;
+        if (open) {
+          Object.assign(navLinks.style, {
+            display:        'flex',
+            flexDirection:  'column',
+            position:       'absolute',
+            top:            '100%',
+            left:           '0',
+            right:          '0',
+            background:     'rgba(10,10,15,0.97)',
+            padding:        '1.5rem 2rem',
+            borderBottom:   '1px solid rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(20px)',
+            zIndex:         '999'
+          });
+        } else {
+          navLinks.style.display = 'none';
+        }
+        menuBtn.textContent = open ? '✕' : '☰';
+      };
+
+      navLinks.querySelectorAll('a').forEach(function(a) {
+        a.onclick = function() { if (open) menuBtn.click(); };
+      });
+
+    });
+  </script>
+
+</body>
+</html>
